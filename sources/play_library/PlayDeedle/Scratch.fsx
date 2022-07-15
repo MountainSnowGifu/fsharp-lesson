@@ -22,4 +22,5 @@ row.GetAs<string>("場所")
 //getはオブジェクトで取得する
 //getasは指定した型で取得する
 
+//課題2: 専門が数学の行だけを残そう
 df.RowsDense |> Series.filterValues(fun row -> row.GetAs<string>("専門").Contains("数学"))
