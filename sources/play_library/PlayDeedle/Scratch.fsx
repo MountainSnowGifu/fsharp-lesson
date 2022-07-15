@@ -21,3 +21,5 @@ row.GetAs<string>("場所")
 //課題１課題1: GetとGetAsの違いを調べよう。
 //getはオブジェクトで取得する
 //getasは指定した型で取得する
+
+df.RowsDense |> Series.filterValues(fun row -> row.GetAs<string>("専門").Contains("数学"))
