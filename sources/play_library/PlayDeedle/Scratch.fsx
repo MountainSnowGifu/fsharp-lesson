@@ -18,6 +18,6 @@ row.GetAs<string>("専門")
 row.GetAs<int>("場所")
 row.GetAs<string>("場所")
 
-//課題１課題1: GetとGetAsの違いを調べよう
+//課題１課題1: GetとGetAsの違いを調べよう。
 //getはオブジェクトで取得する
 //getasは指定した型で取得する
