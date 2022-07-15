@@ -1,0 +1,7 @@
+/Users/akira/Desktop/F#/F#Lesson/fsharp-lesson/sources/play_library/PlayDeedle/bin/Debug/netcoreapp3.1/PlayDeedle.deps.json
+/Users/akira/Desktop/F#/F#Lesson/fsharp-lesson/sources/play_library/PlayDeedle/bin/Debug/netcoreapp3.1/PlayDeedle.runtimeconfig.json
+/Users/akira/Desktop/F#/F#Lesson/fsharp-lesson/sources/play_library/PlayDeedle/bin/Debug/netcoreapp3.1/PlayDeedle.runtimeconfig.dev.json
+/Users/akira/Desktop/F#/F#Lesson/fsharp-lesson/sources/play_library/PlayDeedle/obj/Debug/netcoreapp3.1/PlayDeedle.AssemblyInfoInputs.cache
+/Users/akira/Desktop/F#/F#Lesson/fsharp-lesson/sources/play_library/PlayDeedle/obj/Debug/netcoreapp3.1/PlayDeedle.AssemblyInfo.fs
+/Users/akira/Desktop/F#/F#Lesson/fsharp-lesson/sources/play_library/PlayDeedle/obj/Debug/netcoreapp3.1/PlayDeedle.fsproj.CoreCompileInputs.cache
+/Users/akira/Desktop/F#/F#Lesson/fsharp-lesson/sources/play_library/PlayDeedle/obj/Debug/netcoreapp3.1/PlayDeedle.genruntimeconfig.cache

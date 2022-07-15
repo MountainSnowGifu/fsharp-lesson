@@ -1,0 +1,65 @@
+{
+  "format": 1,
+  "restore": {
+    "/Users/akira/Desktop/F#/F#Lesson/fsharp-lesson/sources/play_library/PlayDeedle/PlayDeedle.fsproj": {}
+  },
+  "projects": {
+    "/Users/akira/Desktop/F#/F#Lesson/fsharp-lesson/sources/play_library/PlayDeedle/PlayDeedle.fsproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/akira/Desktop/F#/F#Lesson/fsharp-lesson/sources/play_library/PlayDeedle/PlayDeedle.fsproj",
+        "projectName": "PlayDeedle",
+        "projectPath": "/Users/akira/Desktop/F#/F#Lesson/fsharp-lesson/sources/play_library/PlayDeedle/PlayDeedle.fsproj",
+        "packagesPath": "/Users/akira/.nuget/packages/",
+        "outputPath": "/Users/akira/Desktop/F#/F#Lesson/fsharp-lesson/sources/play_library/PlayDeedle/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/akira/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "netcoreapp3.1"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netcoreapp3.1": {
+            "projectReferences": {}
+          }
+        }
+      },
+      "frameworks": {
+        "netcoreapp3.1": {
+          "dependencies": {
+            "Deedle": {
+              "target": "Package",
+              "version": "[2.5.0, )",
+              "generatePathProperty": true
+            },
+            "FSharp.Core": {
+              "target": "Package",
+              "version": "[4.7.2, )",
+              "generatePathProperty": true
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/3.1.421/RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
