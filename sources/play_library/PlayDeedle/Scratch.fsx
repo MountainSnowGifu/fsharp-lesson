@@ -29,7 +29,14 @@ df.RowsDense |> Series.filterValues(fun row -> row.GetAs<string>("専門").Conta
 df |> Frame.filterRowValues(fun row -> row.GetAs<string>("専門").Contains("数学"))
 
 //課題4: 場所と学年だけのFrameを作ろう
-df.Columns.[ ["場所"; "学年"] ]
+let keys = ["場所"; "学年"]
+df.Columns.[keys]
 //パイプライン
 df |> Frame.filterCols(fun col _ -> col.Contains("場所") || col.Contains("学年"))
 
+
+//課題5-1: フィルタとプロジェクションを関数にしよう
+//rowを引数にboolを返す関数を引数にとってフィルタしたFrameを返すfilter
+let x = fun (row: ObjectSeries<string>) -> row.GetAs<string>("専門").Contains("数学")
+let filter (x :ObjectSeries<string> -> bool) frame :Frame<int,string>  = frame |> Frame.filterRowValues x
+df |> filter x
