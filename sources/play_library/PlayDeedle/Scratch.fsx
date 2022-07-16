@@ -46,3 +46,5 @@ df |> filter f
 let list = ["場所";"学年"]
 let project (list:list<string>) (frame :Frame<int,string>) = frame.Columns.[list]
 df |> project list
+
+//test
