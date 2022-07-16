@@ -37,6 +37,6 @@ df |> Frame.filterCols(fun col _ -> col.Contains("場所") || col.Contains("学�
 
 //課題5-1: フィルタとプロジェクションを関数にしよう
 //rowを引数にboolを返す関数を引数にとってフィルタしたFrameを返すfilter
-let x = fun (row: ObjectSeries<string>) -> row.GetAs<string>("専門").Contains("数学")
-let filter (x :ObjectSeries<string> -> bool) frame :Frame<int,string>  = frame |> Frame.filterRowValues x
-df |> filter x
+let f = fun (row: ObjectSeries<string>) -> row.GetAs<string>("専門").Contains("数学")
+let filter f frame :Frame<int,string>  = frame |> Frame.filterRowValues f
+df |> filter f
