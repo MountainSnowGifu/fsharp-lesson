@@ -40,3 +40,9 @@ df |> Frame.filterCols(fun col _ -> col.Contains("場所") || col.Contains("学�
 let f = fun (row: ObjectSeries<string>) -> row.GetAs<string>("専門").Contains("数学")
 let filter f frame :Frame<int,string>  = frame |> Frame.filterRowValues f
 df |> filter f
+
+//課題5-2: フィルタとプロジェクションを関数にしよう
+//カラムの名前のリストを引数にとってそのカラムだけを含んだFrameを返すproject関数を作ろう。
+let list = ["場所";"学年"]
+let project (list:list<string>) (frame :Frame<int,string>) = frame.Columns.[list]
+df |> project list
