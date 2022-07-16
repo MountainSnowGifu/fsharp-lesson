@@ -1,6 +1,8 @@
 #r "nuget:Deedle"
 
 open Deedle
+open System
+
 
 #load "Deedle.fsx"
 Frame.ReadCsv "sources/data/シラバス.csv"
@@ -24,3 +26,9 @@ row.GetAs<string>("場所")
 
 //課題2: 専門が数学の行だけを残そう
 df.RowsDense |> Series.filterValues(fun row -> row.GetAs<string>("専門").Contains("数学"))
+
+
+//課題3: 専門が数学の行だけを持ったFrameを作ろう
+let df2 = Frame.ReadCsv("sources/data/シラバス.csv") 
+
+
