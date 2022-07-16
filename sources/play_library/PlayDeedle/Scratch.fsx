@@ -29,6 +29,7 @@ df.RowsDense |> Series.filterValues(fun row -> row.GetAs<string>("専門").Conta
 
 
 //課題3: 専門が数学の行だけを持ったFrameを作ろう
-let df2 = Frame.ReadCsv("sources/data/シラバス.csv") 
+let df2 = Frame.ReadCsv("sources/data/シラバス.csv")
+        |> Frame.filterRowValues(fun row -> row.GetAs<string>("専門").Contains("数学"))
 
 
