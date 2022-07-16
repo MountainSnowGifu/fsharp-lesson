@@ -27,9 +27,11 @@ row.GetAs<string>("場所")
 //課題2: 専門が数学の行だけを残そう
 df.RowsDense |> Series.filterValues(fun row -> row.GetAs<string>("専門").Contains("数学"))
 
-
 //課題3: 専門が数学の行だけを持ったFrameを作ろう
 let df2 = Frame.ReadCsv("sources/data/シラバス.csv")
         |> Frame.filterRowValues(fun row -> row.GetAs<string>("専門").Contains("数学"))
 
+//課題4: 場所と学年だけのFrameを作ろう
+let df3 = Frame.ReadCsv("sources/data/シラバス.csv")
+let df4 = df3.Columns.[ ["場所"; "学年"] ]
 
