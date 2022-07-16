@@ -30,6 +30,6 @@ df |> Frame.filterRowValues(fun row -> row.GetAs<string>("専門").Contains("数
 
 //課題4: 場所と学年だけのFrameを作ろう
 df.Columns.[ ["場所"; "学年"] ]
-df |> Frame.filterCols(fun col _ -> col = "専門")
-
+//パイプライン
+df |> Frame.filterCols(fun col _ -> col.Contains("場所") || col.Contains("学年"))
 
