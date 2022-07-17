@@ -34,8 +34,8 @@ let main args =
         selected_df.Print()
 
     if res.Contains Filter then
-        let parsedArgs = res.GetResult(Filter)
-        let selected_df = df |> filter (isExistRow "専門" "数学")
+        let (colname,colval) = res.GetResult(Filter)
+        let selected_df = df |> filter (isExistRow colname colval)
         selected_df.Print()
 
     0
