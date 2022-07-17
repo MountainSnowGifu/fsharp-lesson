@@ -1,24 +1,26 @@
 ﻿open System
+open Deedle
 open Argu
 
-[<CliPrefix(CliPrefix.Dash)>]
+[<CliPrefix(CliPrefix.DoubleDash)>]
 type Arguments =
-    | Hello
+    | Project of List<string>
 
     interface IArgParserTemplate with
       member s.Usage =
         match s with
-        | Hello -> "print Hello World"
+        | Project _ -> "Project"
 
+let project (list:list<string>) (frame :Frame<int,string>) = frame.Columns.[list]
 
-//課題7: -hello をArgu化しよう
+//課題8: PlayDeedleのprojectとfilterをArguでコマンドライン化
 [<EntryPoint>]
 let main args =
-    printfn "Arguments passed to function : %A" args
+    let df = Frame.ReadCsv "sources/data/シラバス.csv"
     let parser = ArgumentParser.Create<Arguments>(programName="PlayArgu")
     let res = parser.Parse args
-    if res.Contains Hello then
-        printfn "hello world"
-    else
-        printfn "I don't know"
+
+    if res.Contains Project then
+        let list = df|> project (res.GetResult(Project))
+        list.Print()
     0
