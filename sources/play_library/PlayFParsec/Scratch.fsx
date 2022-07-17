@@ -1,5 +1,5 @@
 //git add /Users/akira/Desktop/F#/F#Lesson/fsharp-lesson/sources/play_library/PlayFParsec
-//git commit -m '課題6-2'
+//git commit -m '課題9'
 //git push -u origin play_library/3_playfparsec 
 
 #r "nuget: FParsec"
@@ -18,7 +18,9 @@ let test p str =
 test pfloat "1.25"
 test pfloat "1.25E 3"
 
+//チュートリアルを4.3
 let str s = pstring s
 let (floatBetweenBrackets: Parser<float,unit>) = str "[" >>. pfloat .>> str "]"
 test floatBetweenBrackets "[1.0]"
 test floatBetweenBrackets "[]"
+test floatBetweenBrackets "[1.0"
