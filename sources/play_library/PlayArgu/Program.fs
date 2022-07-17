@@ -31,7 +31,7 @@ let main args =
 
     if res.Contains Filter then
         let prediction = f (res.GetResult(Filter))
-        let list = df |> filter prediction
-        list.Print()
+        let selected_df = df |> filter prediction
+        selected_df.Print()
 
     0
