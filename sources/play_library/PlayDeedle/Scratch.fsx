@@ -43,6 +43,6 @@ df |> filter f
 
 //課題5-2: フィルタとプロジェクションを関数にしよう
 //カラムの名前のリストを引数にとってそのカラムだけを含んだFrameを返すproject関数を作ろう。
-let list = ["場所";"学年"]
-let project (list:list<string>) (frame :Frame<int,string>) = frame.Columns.[list]
-df |> project list
+let columnList = ["場所";"学年"]
+let project (columnList:list<string>) (frame :Frame<int,string>) = frame.Columns.[columnList]
+df |> project columnList
