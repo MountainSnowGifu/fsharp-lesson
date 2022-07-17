@@ -3,8 +3,7 @@
 let showCommandLineArgs() =
 
     let args = System.Environment.GetCommandLineArgs()
-
-    if args[1] = "-hello" then
+    if  args.Length = 2 && args[1] = "-hello" then
         printfn "hello world"
     else
         printfn "I don't know"
