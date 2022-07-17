@@ -4,8 +4,8 @@ open Argu
 
 [<CliPrefix(CliPrefix.DoubleDash)>]
 type Arguments =
-    | Project of string list
-    | Filter of string * string
+    | Project of list:string list
+    | Filter of colname:string * colval: string
 
     interface IArgParserTemplate with
       member s.Usage =
@@ -14,7 +14,11 @@ type Arguments =
         | Filter _ -> "Filter"
 
 let project (columnList:string list) (frame :Frame<int,string>) = frame.Columns.[columnList]
-let isExistRow (colname:string,colval:string) (row: ObjectSeries<string>) = row.GetAs<string>(colname).Contains(colval)
+
+//let isExistRow (colname:string,colval:string) (row: ObjectSeries<string>) = row.GetAs<string>(colname).Contains(colval)
+//片方だけ部分適用ができなくなるのであまり良くない なるべくフラットに並べる方が良い
+
+let isExistRow colname (colval:string) (row: ObjectSeries<string>) = row.GetAs<string>(colname).Contains(colval)
 let filter f frame :Frame<int,string>  = frame |> Frame.filterRowValues f
 
 //課題8: PlayDeedleのprojectとfilterをArguでコマンドライン化
@@ -31,7 +35,7 @@ let main args =
 
     if res.Contains Filter then
         let parsedArgs = res.GetResult(Filter)
-        let selected_df = df |> filter (isExistRow parsedArgs)
+        let selected_df = df |> filter (isExistRow "専門" "数学")
         selected_df.Print()
 
     0
