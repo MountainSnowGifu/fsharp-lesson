@@ -42,31 +42,5 @@ let pString: Parser<string,unit> =
     between (pstring "\"".>> ws) (pstring "\"".>> ws)                          
             (manyChars (normalChar))
 
-type Filter = ColumnName of string
-            | StringSsearch of string
-
-let pFilter = (pColumn |>> ColumnName)
-           <|> (pString |>> StringSsearch)
-
-let pexpr = pColumn  .>>. (pstring "=").>>. pString
-
-test pFilter "\"123.4\""
-test pFilter "[test1]"
-test pexpr "[test1]="
-
-
-let pintToF:Parser<float,unit> = pint32 |>> float
-let pnumber = pintToF
-            <|> pfloat
-
-type Factor = Number of float
-            | Identifier of string
-
-let fnum = Number 3.0
-let fid = Identifier "hogehoge"
-
-let pfactor = (pnumber |>> Number)
-           <|> (pidentifier |>> Identifier)
-
-test pfactor "123.4"
-test pfactor "abc"
+let pFilter = pColumn  .>> str "=" .>>. pString
+test pFilter "[test1]=\"123.4\""
