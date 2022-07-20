@@ -1,5 +1,5 @@
 //git add /Users/akira/Desktop/F#/F#Lesson/fsharp-lesson/sources/play_library/PlayFParsec
-//git commit -m '課題10'
+//git commit -m '課題11 修正'
 //git push -u origin play_library/3_playfparsec 
 
 #r "nuget: FParsec"
@@ -32,5 +32,39 @@ test pidentifier "t111*"
 test pidentifier "1test"
 
 //課題11: projectのパーサーを書こう
-let pProjcet = ws >>.str "project(" .>> ws >>. sepBy pColumn (str ",") .>> str ")"
-test pProjcet " project( [ test1 ] ,[test2])"
+let pProjcet = ws >>.str "project(" .>> ws >>. sepBy pColumn (str ",".>> ws) .>> str ")"
+test pProjcet " project( [ test1 ] , [ test2 ] ) "
+
+//課題12: filterのパーサーを書こう
+//[カラム名] = "文字列"
+let pString: Parser<string,unit> =
+    let normalChar = satisfy (fun c -> c <> '"' && c <> '"')
+    between (pstring "\"".>> ws) (pstring "\"".>> ws)                          
+            (manyChars (normalChar))
+
+type Filter = ColumnName of string
+            | StringSsearch of string
+
+let pFilter = (pColumn |>> ColumnName)
+           <|> (pString |>> StringSsearch)
+
+let pexpr = pFilter  .>>. (pstring "+") .>>. pFilter
+
+test pFilter "\"123.4\""
+test pFilter "[test1]"
+
+let pintToF:Parser<float,unit> = pint32 |>> float
+let pnumber = pintToF
+            <|> pfloat
+
+type Factor = Number of float
+            | Identifier of string
+
+let fnum = Number 3.0
+let fid = Identifier "hogehoge"
+
+let pfactor = (pnumber |>> Number)
+           <|> (pidentifier |>> Identifier)
+
+test pfactor "123.4"
+test pfactor "abc"
