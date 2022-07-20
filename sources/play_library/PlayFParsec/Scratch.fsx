@@ -24,11 +24,15 @@ test pColumn "[場所]"
 let pidentifier :Parser<string,unit>=
     let isIdentifierFirstChar c = isLetter c
     let isIdentifierChar c = isLetter c || isDigit c
-
-    many1Satisfy2L isIdentifierFirstChar isIdentifierChar "isLetter"
-    .>> ws
+    many1Satisfy2L isIdentifierFirstChar isIdentifierChar "isLetter" .>> ws
 
 test pidentifier "test1="
 test pidentifier "test@"
 test pidentifier "t111*"
 test pidentifier "1test"
+
+//課題11: projectのパーサーを書こう
+
+let str s = pstring s
+let pProjcet = str "project(" >>. sepBy pColumn (str ",") .>> str ")"
+test pProjcet "project([test1],[test2])"
