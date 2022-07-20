@@ -1,5 +1,5 @@
 //git add /Users/akira/Desktop/F#/F#Lesson/fsharp-lesson/sources/play_library/PlayFParsec
-//git commit -m '課題11 修正'
+//git commit -m '課題12 変数名修正　pFilterArg'
 //git push -u origin play_library/3_playfparsec 
 
 #r "nuget: FParsec"
@@ -42,6 +42,6 @@ let pString: Parser<string,unit> =
     between (pstring "\"".>> ws) (pstring "\"".>> ws)                          
             (manyChars (normalChar))
 
-let pColumn_pString = pColumn.>> ws .>> str "=" .>> ws >>. pString .>> ws
-let pFilter = ws >>.str "filter(" .>> ws >>. pColumn_pString.>> ws .>> str ")"
+let pFilterArg = pColumn.>> ws .>> str "=" .>> ws >>. pString .>> ws
+let pFilter = ws >>.str "filter(" .>> ws >>. pFilterArg.>> ws .>> str ")"
 test pFilter "filter([専門] = \"物理\")"
