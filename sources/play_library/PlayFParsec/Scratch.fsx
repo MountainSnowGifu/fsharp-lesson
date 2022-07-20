@@ -36,11 +36,12 @@ let pProjcet = ws >>.str "project(" .>> ws >>. sepBy pColumn (str ",".>> ws) .>>
 test pProjcet " project( [ test1 ] , [ test2 ] ) "
 
 //課題12: filterのパーサーを書こう
-//[カラム名] = "文字列"
+//filter([専門] = "物理")
 let pString: Parser<string,unit> =
     let normalChar = satisfy (fun c -> c <> '"' && c <> '"')
     between (pstring "\"".>> ws) (pstring "\"".>> ws)                          
             (manyChars (normalChar))
 
-let pFilter = pColumn  .>> str "=" .>>. pString
-test pFilter "[test1]=\"123.4\""
+let filter = pColumn.>> ws .>> str "=" .>>. pString .>> ws
+let pFilter = ws >>.str "filter(" .>> ws >>. filter.>> ws .>> str ")"
+test pFilter "filter([専門] = \"物理\")"
