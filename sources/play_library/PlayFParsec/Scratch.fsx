@@ -5,6 +5,8 @@
 #r "nuget: FParsec"
 open FParsec
 
+let ws = spaces
+
 //課題10: カラム名のパーサーを書こう //[場所]
 let test p str =
     match run p str with
@@ -17,3 +19,16 @@ let pColumn: Parser<string,unit> =
             (manyChars (normalChar)) //manyChars は与えられた文字パーザで文字シーケンスをパースし、結果を文字列として返します。
 
 test pColumn "[場所]"
+
+//課題 10.1 pidentifierを書け
+let pidentifier :Parser<string,unit>=
+    let isIdentifierFirstChar c = isLetter c
+    let isIdentifierChar c = isLetter c || isDigit c
+
+    many1Satisfy2L isIdentifierFirstChar isIdentifierChar "isLetter"
+    .>> ws
+
+test pidentifier "test1="
+test pidentifier "test@"
+test pidentifier "t111*"
+test pidentifier "1test"
