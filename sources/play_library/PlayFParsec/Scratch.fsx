@@ -42,6 +42,6 @@ let pString: Parser<string,unit> =
     between (pstring "\"".>> ws) (pstring "\"".>> ws)                          
             (manyChars (normalChar))
 
-let pFilterArg = pColumn.>> ws .>> str "=" .>> ws >>. pString .>> ws
-let pFilter = ws >>.str "filter(" .>> ws >>. pFilterArg.>> ws .>> str ")"
-test pFilter "filter([専門] = \"物理\")"
+let pFilterArg = pColumn .>> str "=" .>>. pString .>> ws
+let pFilter = str "filter(" >>. pFilterArg .>> str ")"
+test pFilter "filter([専門]=\"物理\")"
