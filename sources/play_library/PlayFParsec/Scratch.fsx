@@ -48,10 +48,12 @@ type Filter = ColumnName of string
 let pFilter = (pColumn |>> ColumnName)
            <|> (pString |>> StringSsearch)
 
-let pexpr = pFilter  .>>. (pstring "+") .>>. pFilter
+let pexpr = pColumn  .>>. (pstring "=").>>. pString
 
 test pFilter "\"123.4\""
 test pFilter "[test1]"
+test pexpr "[test1]="
+
 
 let pintToF:Parser<float,unit> = pint32 |>> float
 let pnumber = pintToF
