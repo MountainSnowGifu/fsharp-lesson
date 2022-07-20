@@ -5,17 +5,17 @@
 #r "nuget: FParsec"
 open FParsec
 
+let str s = pstring s
 let ws = spaces
-
-//課題10: カラム名のパーサーを書こう //[場所]
 let test p str =
     match run p str with
     | Success(result, _, _)   -> printfn "Success: %A" result
     | Failure(errorMsg, _, _) -> printfn "Failure: %s" errorMsg
 
+//課題10: カラム名のパーサーを書こう //[場所]
 let pColumn: Parser<string,unit> =
     let normalChar = satisfy (fun c -> c <> '[' && c <> ']') //satisfy は与えられた述語関数を満たす任意の文字をパースします。
-    between (pstring "[") (pstring "]")                          
+    between (pstring "[".>> ws) (pstring "]".>> ws)                          
             (manyChars (normalChar)) //manyChars は与えられた文字パーザで文字シーケンスをパースし、結果を文字列として返します。
 
 test pColumn "[場所]"
@@ -32,7 +32,5 @@ test pidentifier "t111*"
 test pidentifier "1test"
 
 //課題11: projectのパーサーを書こう
-
-let str s = pstring s
-let pProjcet = str "project(" >>. sepBy pColumn (str ",") .>> str ")"
-test pProjcet "project([test1],[test2])"
+let pProjcet = ws >>.str "project(" .>> ws >>. sepBy pColumn (str ",") .>> str ")"
+test pProjcet " project( [ test1 ] ,[test2])"
