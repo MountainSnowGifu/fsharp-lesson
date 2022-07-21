@@ -42,6 +42,17 @@ let pString: Parser<string,unit> =
     between (pstring "\"".>> ws) (pstring "\"".>> ws)                          
             (manyChars (normalChar))
 
-let pFilterArg = pColumn .>> str "=" .>>. pString .>> ws
-let pFilter = str "filter(" >>. pFilterArg .>> str ")"
-test pFilter "filter([専門]=\"物理\")"
+let pFilterArg = pColumn .>> str "=".>> ws .>>. pString
+let pFilter = str "filter(" >>. pFilterArg .>>ws .>> str ")"
+test pFilter "filter([専門]= \"物理\")"
+
+//課題13: pProjectのパーサーの返す型を作ろう
+type ProjectExpression = 
+|ColumnList of string list
+|Frame of Frame<int,string>
+
+let pProjcet2 = ws >>.str "project(" .>> ws >>. sepBy pColumn (str ",".>> ws) .>> str ")" |>> ColumnList
+test pProjcet " project( [ test1 ] , [ test2 ] ) "
+
+
+
