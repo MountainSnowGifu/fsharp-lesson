@@ -1,5 +1,5 @@
 //git add /Users/akira/Desktop/F#/F#Lesson/fsharp-lesson/sources/play_library/PlayFParsec
-//git commit -m '課題12 変数名修正　pFilterArg'
+//git commit -m '課題13 修正'
 //git push -u origin play_library/3_playfparsec 
 
 #r "nuget: FParsec"
@@ -48,7 +48,21 @@ test pFilter "filter([専門]= \"物理\")"
 
 //課題13: pProjectのパーサーの返す型を作ろう
 type ProjectExpression = ColumnList of string list
+type FilterExpression = ColnameColvalTuple of (string * string)
 
 let pProjcet2 = ws >>.str "project(" .>> ws >>. sepBy pColumn (str ",".>> ws) .>> str ")" |>> ColumnList
-test pProjcet2 " project([test1],[test2]) "
+test pProjcet2 "project([test1],[test2])"
 
+//課題14: pFilterも型を作って返すようにし、projectとfilterの両方をパースするpExpressionを作る
+let pFilter2 = str "filter(" >>. pFilterArg .>>ws .>> str ")" |>> ColnameColvalTuple
+test pFilter2 "filter([専門]= \"物理\")"
+
+type Expression =
+| ProjectExpression of ProjectExpression
+| FilterExpression of FilterExpression
+
+let pExpression = (pFilter2 |>> FilterExpression)
+                <|> (pProjcet2 |>> ProjectExpression)
+
+test pExpression "filter([専門]= \"物理\")"
+test pExpression "project([test1],[test2])"
