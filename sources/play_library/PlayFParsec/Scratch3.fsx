@@ -43,16 +43,17 @@ let isExistRow (FilterArgu filterArgu) (row: ObjectSeries<string>) = row.GetAs<s
 let filter f frame :Frame<int,string>  = frame |> Frame.filterRowValues f
 let df = Frame.ReadCsv "sources/data/シラバス.csv"
 
-let selected_df expression =
-    match expression with
-    | Project P-> df |> project P 
-    | Filter F->  df |> filter (isExistRow F)
 
-let columnList = "project([場所],[専門])" |> parseBy pExpression
-let result1 = selected_df columnList
+let runExpr argu df =
+    let expression = argu |> parseBy pExpression
+    let selected_df expression =
+        match expression with
+        | Project P-> df |> project P 
+        | Filter F->  df |> filter (isExistRow F)
+    selected_df expression
+
+let result1 = runExpr "project([場所],[専門])" df
 result1.Print()
 
-let condition = "filter([専門]=\"物理\")" |> parseBy pExpression
-let result2 = selected_df columnList
+let result2 = runExpr "filter([専門]=\"物理\")" df
 result2.Print()
-
