@@ -48,7 +48,8 @@ test pFilter "filter([専門]= \"物理\")"
 
 //課題13: pProjectのパーサーの返す型を作ろう
 type ProjectExpression = ColumnList of string list
-type FilterExpression = { ColName: string; ColVal: string }
+type FilterColValues = { ColName: string; ColVal: string }
+type FilterExpression = FilterColValues of FilterColValues
 
 let pProjcet2 = ws >>.str "project(" .>> ws >>. sepBy pColumn (str ",".>> ws) .>> str ")" |>> ColumnList
 test pProjcet2 "project([test1],[test2])"
@@ -59,10 +60,10 @@ type Expression =
 | ProjectExpression of ProjectExpression
 | FilterExpression of FilterExpression
 
-let pFilterColValue = pipe2 pColumn (str "=" >>. pString)
-                        (fun x y -> {ColName = x;ColVal =y})
+let pFilterValue = pipe2 pColumn (str "=" >>. pString)
+                        (fun x y -> {ColName = x;ColVal =y}) |>> FilterColValues
 
-let pFilter2 = str "filter(" >>. pFilterColValue.>> str ")"
+let pFilter2 = str "filter(" >>. pFilterValue.>> str ")"
 test pFilter2 "filter([専門]=\"物理\")"
 
 
@@ -71,5 +72,3 @@ let pExpression = (pProjcet2 |>> ProjectExpression)
 
 test pExpression "filter([専門]=\"物理\")"
 test pExpression "project([test1],[test2])"
-
-
