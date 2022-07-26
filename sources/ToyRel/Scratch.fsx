@@ -1,8 +1,13 @@
+//git add /Users/akira/Desktop/F#/F#Lesson/fsharp-lesson/sources/ToyRel
+//git commit -m '課題1'
+//git push -u origin toyrel/1_pexpression
+
 #r "nuget: Deedle"
 open Deedle
 
 #r "nuget: FParsec"
 open FParsec
+
 
 let str s = pstring s
 let ws = spaces
@@ -39,16 +44,18 @@ let pidentifier:Parser<string,unit> =
     let isIdentifireChar c = isLetter c || isDigit c
     manySatisfy isIdentifireChar .>> ws
 
-type ProjectArgu = {identifier: string; RelationName: string ; ColumnList: string list}
-type ProjectExpression = ProjectArgu of ProjectArgu
+test pidentifier "project (シラバス) 専門, 学年, 場所"
+
+type ProjectArg = {Identifier: string; RelationName: string ; ColumnList: string list}
+type ProjectExpression = ProjectArg of ProjectArg
 
 type Expression =
 | Project of ProjectExpression
 
-let pConditions = pipe2 pRelation (pColumnList)
-                    (fun x y -> {RelationName = x; ColumnList = y})
+let pConditions = pipe3 pidentifier pRelation (pColumnList)
+                    (fun x y z-> {Identifier=x;RelationName = y; ColumnList = z})
 
-let pProjectArgu = ws >>. str "project" >>. pConditions .>> ws |>> ProjectArgu
+let pProjectArgu = ws >>. pConditions .>> ws |>> ProjectArg
 let pExpression = (pProjectArgu|>>Project)
 
 test pExpression "project (シラバス) 専門, 学年, 場所"
