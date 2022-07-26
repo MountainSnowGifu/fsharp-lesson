@@ -8,7 +8,6 @@ open Deedle
 #r "nuget: FParsec"
 open FParsec
 
-
 let str s = pstring s
 let ws = spaces
 
@@ -27,15 +26,15 @@ let parseBy p str =
 
 let pColumn: Parser<string,unit> = 
     let normalChar = satisfy(fun c -> c <> '(' && c<> ')' )
-    (many1Chars(normalChar))
+    many1Chars(normalChar)
 
 let pRelationName: Parser<string,unit> =
     let normalChar = satisfy (fun c -> c <> '(' && c <> ')')
-    between (pstring "(".>> ws) (pstring ")".>> ws)                          
+    between (pstring "(".>> ws) (pstring ")".>> ws)
             (manyChars (normalChar))
 
-let pColumnList = ws>>.sepBy(anyString 2)(str "," .>> ws) .>> ws
-let pRelation=  ws>>. pRelationName .>> ws 
+let pColumnList = ws >>.sepBy(anyString 2)(str "," .>> ws) .>> ws
+let pRelation=  ws >>. pRelationName .>> ws 
 
 test pColumnList "専門,学年,場所"
 test pRelation "(シラバス)"
@@ -53,7 +52,7 @@ type Expression =
 | Project of ProjectExpression
 
 let pConditions = pipe3 pidentifier pRelation (pColumnList)
-                    (fun x y z-> {Identifier=x;RelationName = y; ColumnList = z})
+                    (fun x y z-> {Identifier = x; RelationName = y; ColumnList = z})
 
 let pProjectArgu = ws >>. pConditions .>> ws |>> ProjectArg
 let pExpression = (pProjectArgu|>>Project)
