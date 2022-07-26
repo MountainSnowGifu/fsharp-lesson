@@ -8,6 +8,8 @@ open Deedle
 #r "nuget: FParsec"
 open FParsec
 
+open System.Text.RegularExpressions
+
 let str s = pstring s
 let ws = spaces
 
@@ -25,7 +27,7 @@ let parseBy p str =
 //project(シラバス)専門,学年
 
 let pColumn: Parser<string,unit> = 
-    let normalChar = satisfy(fun c -> c <> '(' && c<> ')' )
+    let normalChar = satisfy(fun c -> Regex.IsMatch( "テキスト", "\p{IsHiragana}"))
     many1Chars(normalChar)
 
 let pRelationName: Parser<string,unit> =
@@ -33,7 +35,7 @@ let pRelationName: Parser<string,unit> =
     between (pstring "(".>> ws) (pstring ")".>> ws)
             (manyChars (normalChar))
 
-let pColumnList = ws >>.sepBy(anyString 2)(str "," .>> ws) .>> ws
+let pColumnList = ws >>.sepBy(pColumn)(str "," .>> ws) .>> ws
 let pRelation=  ws >>. pRelationName .>> ws 
 
 test pColumnList "専門,学年,場所"
@@ -57,4 +59,4 @@ let pConditions = pipe3 pidentifier pRelation (pColumnList)
 let pProjectArgu = ws >>. pConditions .>> ws |>> ProjectArg
 let pExpression = (pProjectArgu|>>Project)
 
-test pExpression "project (シラバス) 専門, 学年, 場所"
+test pExpression "project (シラバス) あ専門, い学年, う場所"
