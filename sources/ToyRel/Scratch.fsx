@@ -2,15 +2,12 @@
 //git commit -m '課題0'
 //git push -u origin toyrel/1_pexpression
 
-#r "nuget: Deedle"
-open Deedle
-
 #r "nuget: FParsec"
 open FParsec
 open System.Text.RegularExpressions
 
-let str s = pstring s
 let ws = spaces
+let str s = pstring s.>> ws
 
 let test p str =
     match run p str with
@@ -24,17 +21,43 @@ let parseBy p str =
 
 //課題0: identifierにマッチする正規表現を書け
 
-let pIdentifier:Parser<string,unit> = regex "([_a-zA-Z¥p{IsHiragana}¥p{IsKatakana}¥p{IsCJKUnifiedIdeographs}][0-9_a-zA-Z¥p{IsHiragana}¥p{IsKatakana}¥p{IsCJKUnifiedIdeographs}]*)|(^(!?.*[^0-9¥(¥)]+$).*$)"
-test pIdentifier "abc"     //abc
-test pIdentifier "_abc123" //_abc123
-test pIdentifier "abc_123" //abc_123
-test pIdentifier "専門"     //専門
-test pIdentifier "フロア"   //フロア
+//let pIdentifierRegex:Parser<string,unit> = regex "^[_a-zA-Z¥p{IsHiragana}¥p{IsKatakana}¥p{IsCJKUnifiedIdeographs}][0-9_a-zA-Z¥p{IsHiragana}¥p{IsKatakana}¥p{IsCJKUnifiedIdeographs}]*"
+let pIdentifierRegex:Parser<string,unit> = regex "([_a-zA-Z]|\p{IsHiragana}|\p{IsKatakana}|\p{IsCJKUnifiedIdeographs})([0-9_a-zA-Z]|\p{IsHiragana}|\p{IsKatakana}|\p{IsCJKUnifiedIdeographs})*"
+test pIdentifierRegex "abc"     //abc
+test pIdentifierRegex "_abc123" //_abc123
+test pIdentifierRegex "abc_123" //abc_123
+test pIdentifierRegex "専門"     //専門
+test pIdentifierRegex "フロア"   //フロア
 
-test pIdentifier "123"     //マッチしない
-test pIdentifier "abc.def" //"abc"
-test pIdentifier "abc*"    //"abc"
-test pIdentifier "abc:def" //"abc"
-test pIdentifier "abc def" //"abc"
-test pIdentifier "(abc)"   //マッチしない
-test pIdentifier "abc+def" //"abc"
+test pIdentifierRegex "123"     //マッチしない
+test pIdentifierRegex "abc.def" //"abc"
+test pIdentifierRegex "abc*"    //"abc"
+test pIdentifierRegex "abc:def" //"abc"
+test pIdentifierRegex "abc def" //"abc"
+test pIdentifierRegex "(abc)"   //マッチしない
+test pIdentifierRegex "abc+def" //"abc"
+
+//課題1: pExpressionとpProjectExpressionをここまでの仕様で完成させよ
+let notSBracket s = s <> '[' && s <> ']'
+let pSBracketColumn :Parser<string,unit> = (pstring "[") >>. many1Satisfy notSBracket .>> (pstring "]")
+let pColumn = pIdentifierRegex <|> pSBracketColumn
+
+//test pColumn "[akira]"
+
+type ColumnList = List of string list
+let pColumnList = sepBy pColumn (str ",") |>> List
+
+//test pColumnList "[akira],abc,_abc123"
+
+type Expression =
+| Identifier of string
+| ProjectExpression of Expression * ColumnList
+
+let pIdentifier = pIdentifierRegex |>> Identifier
+
+let pExpression , pExpressionRef = createParserForwardedToRef() // :Parser<Expression,unit> ref 
+let pProjectExpression = (str "project") >>. pExpression .>>. pColumnList |>> ProjectExpression
+pExpressionRef.Value <- (str "(") >>. (pProjectExpression<|>pIdentifier) .>> (str ")")
+
+test pProjectExpression "project(シラバス)専門,学年,場所"
+test pProjectExpression "project(project(シラバス)専門,学年,場所)専門,学年,場所"
