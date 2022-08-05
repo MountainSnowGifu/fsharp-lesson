@@ -1,5 +1,5 @@
 //git add /Users/akira/Desktop/F#/F#Lesson/fsharp-lesson/sources/ToyRel
-//git commit -m '課題1'
+//git commit -m '課題0'
 //git push -u origin toyrel/1_pexpression
 
 #r "nuget: Deedle"
@@ -7,7 +7,6 @@ open Deedle
 
 #r "nuget: FParsec"
 open FParsec
-
 open System.Text.RegularExpressions
 
 let str s = pstring s
@@ -23,40 +22,19 @@ let parseBy p str =
     | Success(result, _, _)   -> result
     | Failure(errorMsg, _, _) -> failwithf "Failure: %s" errorMsg
 
-//課題1: pExpressionとpProjectExpressionをここまでの仕様で完成させよ
-//project(シラバス)専門,学年
+//課題0: identifierにマッチする正規表現を書け
 
-let pColumn: Parser<string,unit> = 
-    let normalChar = satisfy(fun c -> Regex.IsMatch( "テキスト", "\p{IsHiragana}"))
-    many1Chars(normalChar)
+let pIdentifier:Parser<string,unit> = regex "([_a-zA-Z¥p{IsHiragana}¥p{IsKatakana}¥p{IsCJKUnifiedIdeographs}][0-9_a-zA-Z¥p{IsHiragana}¥p{IsKatakana}¥p{IsCJKUnifiedIdeographs}]*)|(^(!?.*[^0-9¥(¥)]+$).*$)"
+test pIdentifier "abc"     //abc
+test pIdentifier "_abc123" //_abc123
+test pIdentifier "abc_123" //abc_123
+test pIdentifier "専門"     //専門
+test pIdentifier "フロア"   //フロア
 
-let pRelationName: Parser<string,unit> =
-    let normalChar = satisfy (fun c -> c <> '(' && c <> ')')
-    between (pstring "(".>> ws) (pstring ")".>> ws)
-            (manyChars (normalChar))
-
-let pColumnList = ws >>.sepBy(pColumn)(str "," .>> ws) .>> ws
-let pRelation=  ws >>. pRelationName .>> ws 
-
-test pColumnList "専門,学年,場所"
-test pRelation "(シラバス)"
-
-let pidentifier:Parser<string,unit> = 
-    let isIdentifireChar c = isLetter c || isDigit c
-    manySatisfy isIdentifireChar .>> ws
-
-test pidentifier "project (シラバス) 専門, 学年, 場所"
-
-type ProjectArg = {Identifier: string; RelationName: string ; ColumnList: string list}
-type ProjectExpression = ProjectArg of ProjectArg
-
-type Expression =
-| Project of ProjectExpression
-
-let pConditions = pipe3 pidentifier pRelation (pColumnList)
-                    (fun x y z-> {Identifier = x; RelationName = y; ColumnList = z})
-
-let pProjectArgu = ws >>. pConditions .>> ws |>> ProjectArg
-let pExpression = (pProjectArgu|>>Project)
-
-test pExpression "project (シラバス) あ専門, い学年, う場所"
+test pIdentifier "123"     //マッチしない
+test pIdentifier "abc.def" //"abc"
+test pIdentifier "abc*"    //"abc"
+test pIdentifier "abc:def" //"abc"
+test pIdentifier "abc def" //"abc"
+test pIdentifier "(abc)"   //マッチしない
+test pIdentifier "abc+def" //"abc"
