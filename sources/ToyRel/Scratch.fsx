@@ -1,6 +1,8 @@
 //git add /Users/akira/Desktop/F#/F#Lesson/fsharp-lesson/sources/ToyRel
 //git commit -m '課題0'
 //git push -u origin toyrel/1_pexpression
+#r "nuget: Deedle"
+open Deedle
 
 #r "nuget: FParsec"
 open FParsec
@@ -39,13 +41,13 @@ test pIdentifierRegex "abc+def" //"abc"
 
 //課題1: pExpressionとpProjectExpressionをここまでの仕様で完成させよ
 let notSBracket s = s <> '[' && s <> ']'
-let pSBracketColumn :Parser<string,unit> = (pstring "[") >>. many1Satisfy notSBracket .>> (pstring "]")
+let pSBracketColumn :Parser<string,unit> = (str "[") >>. many1Satisfy notSBracket .>> (str "]")
 let pColumn = pIdentifierRegex <|> pSBracketColumn
 
 //test pColumn "[akira]"
 
-type ColumnList = List of string list
-let pColumnList = sepBy pColumn (str ",") |>> List
+type ColumnList = ColumnList of string list
+let pColumnList = sepBy pColumn (str ",") |>> ColumnList
 
 //test pColumnList "[akira],abc,_abc123"
 
@@ -59,5 +61,24 @@ let pExpression , pExpressionRef = createParserForwardedToRef() // :Parser<Expre
 let pProjectExpression = (str "project") >>. pExpression .>>. pColumnList |>> ProjectExpression
 pExpressionRef.Value <- (str "(") >>. (pProjectExpression<|>pIdentifier) .>> (str ")")
 
-test pProjectExpression "project(シラバス)専門,学年,場所"
-test pProjectExpression "project(project(シラバス)専門,学年,場所)専門,学年,場所"
+let df = Frame.ReadCsv "sources/data/シラバス.csv"
+
+let distinct (df:Frame<int,string>) = df.Columns[df.ColumnKeys].Rows.Values 
+                                    |> Seq.distinct
+                                    |> Series.ofValues
+                                    |> Frame.ofRows
+
+let project (ColumnList columnList)(df:Frame<int,string>) = distinct df.Columns.[columnList]
+
+let rec evalExpression expression df = 
+    match expression with
+    | Identifier I -> df
+    | ProjectExpression(expression,columnList) -> evalExpression expression (df|> project columnList)
+and evalProjectExpression projectExpression df =
+    match projectExpression with
+    | Identifier I -> df
+    | ProjectExpression(expression,columnList) -> evalProjectExpression expression (df|> project columnList)
+
+let tmp = parseBy pProjectExpression "project(project(シラバス)専門,学年,場所)学年,場所"
+let result = evalExpression tmp df
+result.Print()

@@ -1,5 +1,5 @@
 ﻿//git add /Users/akira/Desktop/F#/F#Lesson/fsharp-lesson/sources/ToyRel
-//git commit -m '課題0'
+//git commit -m '課題1'
 //git push -u origin toyrel/1_pexpression
 
 open FParsec
@@ -62,3 +62,4 @@ pExpressionRef.Value <- (str "(") >>. (pProjectExpression<|>pIdentifier) .>> (st
 
 test pProjectExpression "project(シラバス)専門,学年,場所"
 test pProjectExpression "project(project(シラバス)専門,学年,場所)専門,学年,場所"
+test pProjectExpression "project(project(project(project(シラバス)専門,学年,場所)専門,学年,場所)専門,学年,場所)専門,学年,場所"
