@@ -1,5 +1,5 @@
 //git add /Users/akira/Desktop/F#/F#Lesson/fsharp-lesson/sources/ToyRel
-//git commit -m '課題0'
+//git commit -m '課題2'
 //git push -u origin toyrel/1_pexpression
 #r "nuget: Deedle"
 open Deedle
@@ -23,8 +23,8 @@ let parseBy p str =
 
 //課題0: identifierにマッチする正規表現を書け
 
-//let pIdentifierRegex:Parser<string,unit> = regex "^[_a-zA-Z¥p{IsHiragana}¥p{IsKatakana}¥p{IsCJKUnifiedIdeographs}][0-9_a-zA-Z¥p{IsHiragana}¥p{IsKatakana}¥p{IsCJKUnifiedIdeographs}]*"
-let pIdentifierRegex:Parser<string,unit> = regex "([_a-zA-Z]|\p{IsHiragana}|\p{IsKatakana}|\p{IsCJKUnifiedIdeographs})([0-9_a-zA-Z]|\p{IsHiragana}|\p{IsKatakana}|\p{IsCJKUnifiedIdeographs})*"
+let pIdentifierRegex:Parser<string,unit> = regex "^[_a-zA-Z¥p{IsHiragana}¥p{IsKatakana}¥p{IsCJKUnifiedIdeographs}][0-9_a-zA-Z¥p{IsHiragana}¥p{IsKatakana}¥p{IsCJKUnifiedIdeographs}]*"
+//let pIdentifierRegex:Parser<string,unit> = regex "([_a-zA-Z]|\p{IsHiragana}|\p{IsKatakana}|\p{IsCJKUnifiedIdeographs})([0-9_a-zA-Z]|\p{IsHiragana}|\p{IsKatakana}|\p{IsCJKUnifiedIdeographs})*"
 test pIdentifierRegex "abc"     //abc
 test pIdentifierRegex "_abc123" //_abc123
 test pIdentifierRegex "abc_123" //abc_123
@@ -61,6 +61,7 @@ let pExpression , pExpressionRef = createParserForwardedToRef() // :Parser<Expre
 let pProjectExpression = (str "project") >>. pExpression .>>. pColumnList |>> ProjectExpression
 pExpressionRef.Value <- (str "(") >>. (pProjectExpression<|>pIdentifier) .>> (str ")")
 
+//課題2: dfのrowを一意にしたdf2を返す、distinctを作れ
 let distinct (df:Frame<int,string>) = df.Columns[df.ColumnKeys].Rows.Values 
                                     |> Seq.distinct
                                     |> Series.ofValues
