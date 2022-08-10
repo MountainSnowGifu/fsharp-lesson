@@ -61,8 +61,6 @@ let pExpression , pExpressionRef = createParserForwardedToRef() // :Parser<Expre
 let pProjectExpression = (str "project") >>. pExpression .>>. pColumnList |>> ProjectExpression
 pExpressionRef.Value <- (str "(") >>. (pProjectExpression<|>pIdentifier) .>> (str ")")
 
-let df = Frame.ReadCsv "sources/data/シラバス.csv"
-
 let distinct (df:Frame<int,string>) = df.Columns[df.ColumnKeys].Rows.Values 
                                     |> Seq.distinct
                                     |> Series.ofValues
@@ -79,6 +77,7 @@ and evalProjectExpression projectExpression df =
     | Identifier I -> df
     | ProjectExpression(expression,columnList) -> evalProjectExpression expression (df|> project columnList)
 
-let tmp = parseBy pProjectExpression "project(project(シラバス)専門,学年,場所)学年,場所"
-let result = evalExpression tmp df
+let df = Frame.ReadCsv "sources/data/シラバス.csv"
+let expression = parseBy pProjectExpression "project(project(シラバス)専門,学年,場所)学年,場所"
+let result = df |> evalExpression expression
 result.Print()
