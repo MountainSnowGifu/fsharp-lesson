@@ -61,13 +61,17 @@ let pExpression , pExpressionRef = createParserForwardedToRef() // :Parser<Expre
 let pProjectExpression = (str "project") >>. pExpression .>>. pColumnList |>> ProjectExpression
 pExpressionRef.Value <- (str "(") >>. (pProjectExpression<|>pIdentifier) .>> (str ")")
 
+//課題3: Relationの型をつくれ
+type Relation = Relation of Frame<int,string>
+
 //課題2: dfのrowを一意にしたdf2を返す、distinctを作れ
 let distinct (df:Frame<int,string>) = df.Columns[df.ColumnKeys].Rows.Values 
                                     |> Seq.distinct
                                     |> Series.ofValues
                                     |> Frame.ofRows
+                                    |> Relation
 
-let project (ColumnList columnList)(df:Frame<int,string>) = distinct df.Columns.[columnList]
+let project (ColumnList columnList)(Relation relation) = distinct relation.Columns.[columnList]
 
 let rec evalExpression expression df = 
     match expression with
@@ -80,5 +84,5 @@ and evalProjectExpression projectExpression df =
 
 let df = Frame.ReadCsv "sources/data/シラバス.csv"
 let expression = parseBy pProjectExpression "project(project(シラバス)専門,学年,場所)学年,場所"
-let result = df |> evalExpression expression
+let (Relation result) = df |> Relation |> evalExpression expression
 result.Print()
