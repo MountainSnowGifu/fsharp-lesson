@@ -23,8 +23,7 @@ let parseBy p str =
 
 //課題0: identifierにマッチする正規表現を書け
 
-let pIdentifierRegex:Parser<string,unit> = regex "^[_a-zA-Z¥p{IsHiragana}¥p{IsKatakana}¥p{IsCJKUnifiedIdeographs}][0-9_a-zA-Z¥p{IsHiragana}¥p{IsKatakana}¥p{IsCJKUnifiedIdeographs}]*"
-//let pIdentifierRegex:Parser<string,unit> = regex "([_a-zA-Z]|\p{IsHiragana}|\p{IsKatakana}|\p{IsCJKUnifiedIdeographs})([0-9_a-zA-Z]|\p{IsHiragana}|\p{IsKatakana}|\p{IsCJKUnifiedIdeographs})*"
+let pIdentifierRegex:Parser<string,unit> = regex "([_a-zA-Z]|\p{IsHiragana}|\p{IsKatakana}|\p{IsCJKUnifiedIdeographs})([0-9_a-zA-Z]|\p{IsHiragana}|\p{IsKatakana}|\p{IsCJKUnifiedIdeographs})*"
 test pIdentifierRegex "abc"     //abc
 test pIdentifierRegex "_abc123" //_abc123
 test pIdentifierRegex "abc_123" //abc_123
@@ -86,3 +85,8 @@ let df = Frame.ReadCsv "sources/data/シラバス.csv"
 let expression = parseBy pProjectExpression "project(project(シラバス)専門,学年,場所)学年,場所"
 let (Relation result) = df |> Relation |> evalExpression expression
 result.Print()
+
+//課題3: Relationの型をつくれ csvをロードする関数(readCsvしてdistinctするなにか）
+let GetRelationFromCsv csvPath = distinct (Frame.ReadCsv csvPath)
+let (Relation GetRelationFromCsvResult) = GetRelationFromCsv "sources/data/シラバス.csv"
+GetRelationFromCsvResult.Print()
