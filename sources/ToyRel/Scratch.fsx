@@ -1,5 +1,5 @@
 //git add /Users/akira/Desktop/F#/F#Lesson/fsharp-lesson/sources/ToyRel
-//git commit -m '課題2'
+//git commit -m '課題3: Relationの型をつくれ csvをロードする関数(readCsvしてdistinctするなにか）'
 //git push -u origin toyrel/1_pexpression
 #r "nuget: Deedle"
 open Deedle
