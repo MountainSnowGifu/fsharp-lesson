@@ -70,33 +70,23 @@ let distinct (df:Frame<int,string>) = df.Columns[df.ColumnKeys].Rows.Values
                                     |> Frame.ofRows
                                     |> Relation
 
-module RalationType = 
-    type T = {Relation: Frame<int,string>}
-    let distinct (df:Frame<int,string>) = df.Columns[df.ColumnKeys].Rows.Values 
-                                        |> Seq.distinct
-                                        |> Series.ofValues
-                                        |> Frame.ofRows
-                                        |> Relation
-    let getRelation df = distinct df
-
-
 let project (ColumnList columnList)(Relation relation) = distinct relation.Columns.[columnList]
 
-let rec evalExpression expression df = 
-    match expression with
-    | Identifier I -> df
-    | ProjectExpression(expression,columnList) -> evalExpression expression (df|> project columnList)
-and evalProjectExpression projectExpression df =
-    match projectExpression with
-    | Identifier I -> df
-    | ProjectExpression(expression,columnList) -> evalProjectExpression expression (df|> project columnList)
+//課題3: Relationの型をつくれ csvをロードする関数(readCsvしてdistinctするなにか）
+let csvPath = "sources/data/シラバス.csv"
+let GetRelationFromCsv csvPath = distinct (Frame.ReadCsv csvPath)
+let (Relation GetRelationFromCsvResult) = GetRelationFromCsv csvPath
+GetRelationFromCsvResult.Print()
 
-let df = Frame.ReadCsv "sources/data/シラバス.csv"
+let rec evalExpression expression  = 
+    match expression with
+    | Identifier I -> GetRelationFromCsv csvPath
+    | ProjectExpression(expression,columnList) -> evalProjectExpression expression columnList
+
+and evalProjectExpression projectExpression columnList =
+    evalExpression projectExpression |> project columnList
+
 let expression = parseBy pProjectExpression "project(project(シラバス)専門,学年,場所)学年,場所"
-let (Relation result) = df |> Relation |> evalExpression expression
+let (Relation result) = evalExpression expression
 result.Print()
 
-//課題3: Relationの型をつくれ csvをロードする関数(readCsvしてdistinctするなにか）
-let GetRelationFromCsv csvPath = distinct (Frame.ReadCsv csvPath)
-let (Relation GetRelationFromCsvResult) = GetRelationFromCsv "sources/data/シラバス.csv"
-GetRelationFromCsvResult.Print()
