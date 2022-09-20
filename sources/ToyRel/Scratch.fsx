@@ -64,7 +64,7 @@ pExpressionRef.Value <- (str "(") >>. (pProjectExpression<|>pIdentifier) .>> (st
 type Relation = Relation of Frame<int,string>
 
 //課題2: dfのrowを一意にしたdf2を返す、distinctを作れ
-let distinct (df:Frame<int,string>) = df.Columns[df.ColumnKeys].Rows.Values 
+let distinct (df:Frame<int,string>) = df.Rows.Values 
                                     |> Seq.distinct
                                     |> Series.ofValues
                                     |> Frame.ofRows
