@@ -1,6 +1,6 @@
 //git add /Users/akira/Desktop/F#/F#Lesson/fsharp-lesson/sources/ToyRel
 //git commit -m '課題3: Relationの型をつくれ csvをロードする関数(readCsvしてdistinctするなにか）'
-//git push -u origin toyrel/1_pexpression
+//git push -u origin toyrel/3_relation_type
 #r "nuget: Deedle"
 open Deedle
 
@@ -69,6 +69,16 @@ let distinct (df:Frame<int,string>) = df.Columns[df.ColumnKeys].Rows.Values
                                     |> Series.ofValues
                                     |> Frame.ofRows
                                     |> Relation
+
+module RalationType = 
+    type T = {Relation: Frame<int,string>}
+    let distinct (df:Frame<int,string>) = df.Columns[df.ColumnKeys].Rows.Values 
+                                        |> Seq.distinct
+                                        |> Series.ofValues
+                                        |> Frame.ofRows
+                                        |> Relation
+    let getRelation df = distinct df
+
 
 let project (ColumnList columnList)(Relation relation) = distinct relation.Columns.[columnList]
 
